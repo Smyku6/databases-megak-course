@@ -1,80 +1,46 @@
 const mysql = require('mysql2/promise');
+const {v4: uuid} = require('uuid');
+
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  database: 'megak_students',
+  namedPlaceholders: true,
+  decimalNumbers: true,
+  bigNumberStrings: false
+});
 
 (async () => {
 
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'megak_cars',
-    decimalNumbers: true,
-    namedPlaceholders: true,
-  })
+  console.log('--- EXERCISE 1 ---')
+  const [results] = await pool.execute('SELECT * FROM `course`');
+  console.log(results)
 
-  // console.log(connection);
-  // await connection.end();
+  console.log('--- EXERCISE 2 ---')
+  const [student_course] = await pool.execute('SELECT `student`.`id`, `student`.`name`,' +
+    ' `student`.`surname`,' +
+    ' `student_course`.`courseName`' +
+    ' FROM' +
+    ' `student` JOIN `student_course` ON `student`.`id` = `student_course`.`studentId` WHERE`age`' +
+    ' > 40');
+  console.log(student_course)
 
-  const [results] = await connection.execute('SELECT * FROM `car` WHERE `price` > 100000');
-  // console.log(results);
+  console.log('--- EXERCISE 3 ---')
+  const {affectedRows: deletedStudentsUnderGivenAge} = (await pool.execute('DELETE FROM' +
+    ' `student` WHERE' +
+    ' `age` < :age', {age: 18}))[0];
+  console.log(deletedStudentsUnderGivenAge);
 
+  console.log('--- EXERCISE 4 ---')
+  const newStudentId = uuid();
+  await pool.execute('INSERT INTO `student`(`id`, `name`,`surname`,`age`,' +
+    ' `city`)' +
+    ' VALUES(:id, :name, :surname,' +
+    ' :age, :city);', {
+    id: newStudentId,
+    name: 'Janusz', surname: 'Gortat', age: 85, city: 'Wrocław'
+  });
+  console.log(newStudentId);
 
-  // const answer = await connection.execute('UPDATE `car` SET `price` = `price`+10');
-  // console.log(answer);
-
-  // const answer = await connection.execute('UPDATE `car` SET `price` = `price`+10');
-  // console.log(answer[0].affectedRows);
-
-  // const {affectedRows} = (await connection.execute('UPDATE `car` SET `price` = `price`+10'))[0];
-  // console.log(affectedRows);
-
-  // const [{affectedRows}] = await connection.execute('UPDATE `car` SET `price` = `price`+10');
-  // console.log(affectedRows);
-
-  // const value = 10000;
-  // const addedValue = 123;
-  //
-  // const [{
-  //   affectedRows
-  // }] = (await connection.execute('UPDATE `car` SET `price` = `price` + :addedValue WHERE `price` < :value', {
-  //   addedValue, value
-  // }))
-  //
-  // console.log(affectedRows);
-
-  //
-  // console.log([await connection.execute('SELECT * FROM `car` WHERE `price` < 20000')][0][0]);
-
-
-  const cars = [
-    {
-      registrationNumber: 'SJZ7CC6',
-      brand: 'Jaguar',
-      model: 'X-Type',
-      color: 'black',
-      firstRegistrationAt: '2013-03-14',
-      price: 125000,
-    },
-    {
-      registrationNumber: 'GDA32423C',
-      brand: 'Fiat',
-      model: 'Punto',
-      color: 'yellow',
-      firstRegistrationAt: '2010-01-01',
-      price: 1000,
-    }
-  ]
-
-  // STATEMENT
-
-  const addCarStatement = await connection.prepare('INSERT INTO `car` VALUES(?,?,?,?,?,?)');
-
-  try {
-    for (const car of cars) {
-      await addCarStatement.execute(Object.values(car));
-    }
-    console.log('działa')
-  } finally {
-    addCarStatement.close();
-  }
-
-
+  await pool.end();
 })();
