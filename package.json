@@ -1,0 +1,41 @@
+{
+  "name": "mongo-db-basics",
+  "version": "1.0.0",
+  "description": "**MySQL Collation:** utf8mb4_unicode_ci",
+  "main": "index.js",
+  "dependencies": {
+    "denque": "^2.0.1",
+    "generate-function": "^2.3.1",
+    "iconv-lite": "^0.6.3",
+    "is-property": "^1.0.2",
+    "long": "^4.0.0",
+    "lru-cache": "^6.0.0",
+    "mongodb": "^4.3.1",
+    "mysql2": "^2.3.3",
+    "named-placeholders": "^1.1.2",
+    "pseudomap": "^1.0.2",
+    "safer-buffer": "^2.1.2",
+    "seq-queue": "^0.0.5",
+    "sqlstring": "^2.3.2",
+    "uuid": "^8.3.2",
+    "yallist": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mongo-start": "cd /d C:/Program Files/MongoDB/Server/5.0/bin && mongod.exe",
+    "mongo-shell": "cd /d C:/Program Files/MongoDB/Server/5.0/bin && mongo.exe"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Smyku6/databases-megak-course.git"
+  },
+  "keywords": [
+    "mongodb"
+  ],
+  "author": "Adam Smycz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Smyku6/databases-megak-course/issues"
+  },
+  "homepage": "https://github.com/Smyku6/databases-megak-course#readme"
+}
