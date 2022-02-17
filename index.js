@@ -1,46 +1,22 @@
-const mysql = require('mysql2/promise');
-const {v4: uuid} = require('uuid');
+const {pool} = require("./utils/db");
+const {ToDoRecord} = require("./records/todo.record");
+const {TodoRepository} = require("./repositories/todo.repository");
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  database: 'megak_students',
-  namedPlaceholders: true,
-  decimalNumbers: true,
-  bigNumberStrings: false
-});
 
 (async () => {
 
-  console.log('--- EXERCISE 1 ---')
-  const [results] = await pool.execute('SELECT * FROM `course`');
-  console.log(results)
+  // const found = await TodoRepository.find('98941a1a-ff57-4056-9ef4-6d97a2978fe6');
+  //
+  // await TodoRepository.update(found);
 
-  console.log('--- EXERCISE 2 ---')
-  const [student_course] = await pool.execute('SELECT `student`.`id`, `student`.`name`,' +
-    ' `student`.`surname`,' +
-    ' `student_course`.`courseName`' +
-    ' FROM' +
-    ' `student` JOIN `student_course` ON `student`.`id` = `student_course`.`studentId` WHERE`age`' +
-    ' > 40');
-  console.log(student_course)
 
-  console.log('--- EXERCISE 3 ---')
-  const {affectedRows: deletedStudentsUnderGivenAge} = (await pool.execute('DELETE FROM' +
-    ' `student` WHERE' +
-    ' `age` < :age', {age: 18}))[0];
-  console.log(deletedStudentsUnderGivenAge);
+  // await TodoRepository.insert(new ToDoRecord({id:'guwno', text: 'no i co działa czy nie '}))
 
-  console.log('--- EXERCISE 4 ---')
-  const newStudentId = uuid();
-  await pool.execute('INSERT INTO `student`(`id`, `name`,`surname`,`age`,' +
-    ' `city`)' +
-    ' VALUES(:id, :name, :surname,' +
-    ' :age, :city);', {
-    id: newStudentId,
-    name: 'Janusz', surname: 'Gortat', age: 85, city: 'Wrocław'
-  });
-  console.log(newStudentId);
-
+  const guwno = await TodoRepository.find('guwno');
+  console.log(await guwno);
+  guwno.text = 'ZMIANY ZMIANY ZMIANY FLET';
+  await TodoRepository.update(guwno);
   await pool.end();
+
 })();
+
